@@ -1,0 +1,260 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Outil Technicien – Kervin Harte (Complet)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #000000;
+      color: #e0e0e0;
+      margin: 0;
+      padding: 0;
+    }
+    header, footer {
+      text-align: center;
+      padding: 15px;
+      background-color: #1a1a1a;
+      color: #00bfff;
+      font-weight: bold;
+    }
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      background: #111;
+      border-bottom: 1px solid #333;
+    }
+    nav button {
+      flex: 1;
+      padding: 10px;
+      background: none;
+      border: none;
+      color: #00bfff;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    nav button.active {
+      background-color: #0077cc;
+      color: white;
+    }
+    .tab {
+      display: none;
+      padding: 20px;
+    }
+    .tab.active {
+      display: block;
+    }
+    input, textarea, select, button {
+      width: 100%;
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #444;
+      background: #000;
+      color: #00ffcc;
+    }
+    button {
+      background-color: #0077cc;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .links a {
+      display: inline-block;
+      margin: 8px;
+      padding: 10px 14px;
+      background: #1a1a1a;
+      border: 1px solid #444;
+      color: #00bfff;
+      text-decoration: none;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+
+<header>Outil Technicien – Kervin Harte</header>
+<nav>
+  <button class="tablink active" onclick="openTab('memo')">Mémo</button>
+  <button class="tablink" onclick="openTab('mac')">MAC</button>
+  <button class="tablink" onclick="openTab('coax')">Atténuation</button>
+  <button class="tablink" onclick="openTab('client')">Client/Matos</button>
+  <button class="tablink" onclick="openTab('raccourcis')">Raccourcis</button>
+</nav>
+
+<div id="memo" class="tab active">
+  <label>Mémo technique :</label>
+  <textarea id="memoText" placeholder="Notes Kairos, WFM..."></textarea>
+  <button onclick="coller('memoText')">📥 Coller</button>
+  <button onclick="copier('memoText')">📤 Copier</button>
+  <button onclick="effacer('memoText')">🗑️ Effacer</button>
+</div>
+
+<div id="mac" class="tab">
+  <label>Adresse MAC (collée sans séparateur) :</label>
+  <input type="text" id="macInput" placeholder="a1b2c3d4e5f6">
+  <button onclick="genererMac()">⚙️ Générer</button>
+  <button onclick="coller('macInput')">📥 Coller</button>
+  <button onclick="formatMac()">📋 Formater</button>
+  <button onclick="copier('macOutput')">📤 Copier</button>
+  <button onclick="effacerMac()">🗑️ Effacer</button>
+  <input type="text" id="macOutput" readonly>
+</div>
+
+<div id="coax" class="tab">
+  <label>Fréquence (MHz) :</label>
+  <input type="number" id="freq">
+  <label>Longueur RG6 (m) :</label>
+  <input type="number" id="rg6">
+  <label>Longueur RG11 (m) :</label>
+  <input type="number" id="rg11">
+  <label>Perte de prise (dB) :</label>
+  <input type="number" id="prise">
+  <label>Signal de base (dBmV) :</label>
+  <input type="number" id="signalBase">
+  <label>Type :</label>
+  <select id="type">
+    <option value="rx">RX</option>
+    <option value="tx">TX</option>
+  </select>
+  <button onclick="calculerAttenuation()">📉 Calculer</button>
+  <input type="text" id="resultAtt" readonly>
+</div>
+
+
+
+
+<div id="client" class="tab">
+  <style>
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .form-field {
+      display: flex;
+      flex-direction: column;
+    }
+  </style>
+  <div class="form-grid">
+    <div class="form-field">
+      <label>MAC Modem Neuf :</label>
+      <input type="text" id="macNeuf">
+      <button onclick="coller('macNeuf')">📥 Coller</button>
+      <button onclick="copier('macNeuf')">📤 Copier</button>
+    </div>
+
+    <div class="form-field">
+      <label>MAC Modem Ancien :</label>
+      <input type="text" id="macAncien">
+      <button onclick="coller('macAncien')">📥 Coller</button>
+      <button onclick="copier('macAncien')">📤 Copier</button>
+    </div>
+
+    <div class="form-field">
+      <label>SN Box Neuve :</label>
+      <input type="text" id="snBoxNeuve">
+      <button onclick="coller('snBoxNeuve')">📥 Coller</button>
+      <button onclick="copier('snBoxNeuve')">📤 Copier</button>
+    </div>
+
+    <div class="form-field">
+      <label>SN Box Ancienne :</label>
+      <input type="text" id="snBoxAncienne">
+      <button onclick="coller('snBoxAncienne')">📥 Coller</button>
+      <button onclick="copier('snBoxAncienne')">📤 Copier</button>
+    </div>
+  </div>
+</div>
+
+
+<div id="raccourcis" class="tab">
+  <div class="links">
+    <a href="http://192.168.0.1" target="_blank">Portail Modem</a>
+    
+    <a href="https://www.speedtest.net" target="_blank">Speedtest</a>
+    
+    <a href="https://voo.be" target="_blank">VOO</a>
+    <a href="https://orange.be" target="_blank">Orange</a>
+    <a href="https://chat.openai.com" target="_blank">CheatGPT</a>
+  </div>
+</div>
+
+<footer>Outil complet – Kervin Harte</footer>
+
+<script>
+  function openTab(id) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tablink').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  function copier(id) {
+    const el = document.getElementById(id);
+    el.select();
+    navigator.clipboard.writeText(el.value);
+  }
+
+  function coller(id) {
+    navigator.clipboard.readText().then(text => {
+      document.getElementById(id).value = text;
+    });
+  }
+
+  function effacer(id) {
+    document.getElementById(id).value = '';
+  }
+
+  function formatMac() {
+    let mac = document.getElementById("macInput").value.replace(/[^a-fA-F0-9]/g, '').toUpperCase();
+    if(mac.length === 12) {
+      let formatted = mac.match(/.{2}/g).join(":");
+      document.getElementById("macOutput").value = formatted;
+    } else {
+      alert("MAC invalide (12 caractères attendus).");
+    }
+  }
+
+  function genererMac() {
+    let hex = "0123456789ABCDEF";
+    let mac = "";
+    for (let i = 0; i < 12; i++) {
+      mac += hex[Math.floor(Math.random() * 16)];
+    }
+    document.getElementById("macInput").value = mac;
+    formatMac();
+  }
+
+  function effacerMac() {
+    document.getElementById("macInput").value = '';
+    document.getElementById("macOutput").value = '';
+  }
+
+  function calculerAttenuation() {
+    const freq = parseFloat(document.getElementById("freq").value);
+    const rg6 = parseFloat(document.getElementById("rg6").value);
+    const rg11 = parseFloat(document.getElementById("rg11").value);
+    const prise = parseFloat(document.getElementById("prise").value);
+    const base = parseFloat(document.getElementById("signalBase").value);
+    const type = document.getElementById("type").value;
+
+    if (isNaN(freq) || isNaN(rg6) || isNaN(rg11) || isNaN(prise) || isNaN(base)) {
+      alert("Merci de remplir tous les champs.");
+      return;
+    }
+
+    const attRG6 = (freq * 0.0035) * rg6;
+    const attRG11 = (freq * 0.0018) * rg11;
+    const totalAtt = attRG6 + attRG11 + prise;
+    const finalSignal = type === "rx" ? base - totalAtt : base + totalAtt;
+    document.getElementById("resultAtt").value = `Signal final : ${finalSignal.toFixed(2)} dBmV`;
+  }
+</script>
+
+</body>
+</html>
