@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -79,11 +78,11 @@
 
 <header>Outil Technicien – Kervin Harte</header>
 <nav>
-  <button class="tablink active" onclick="openTab('memo')">Mémo</button>
-  <button class="tablink" onclick="openTab('mac')">MAC</button>
-  <button class="tablink" onclick="openTab('coax')">Atténuation</button>
-  <button class="tablink" onclick="openTab('client')">Client/Matos</button>
-  <button class="tablink" onclick="openTab('raccourcis')">Raccourcis</button>
+  <button class="tablink active" onclick="openTab('memo', event)">Mémo</button>
+  <button class="tablink" onclick="openTab('mac', event)">MAC</button>
+  <button class="tablink" onclick="openTab('coax', event)">Atténuation</button>
+  <button class="tablink" onclick="openTab('client', event)">Client/Matos</button>
+  <button class="tablink" onclick="openTab('raccourcis', event)">Raccourcis</button>
 </nav>
 
 <div id="memo" class="tab active">
@@ -97,7 +96,6 @@
 <div id="mac" class="tab">
   <label>Adresse MAC (collée sans séparateur) :</label>
   <input type="text" id="macInput" placeholder="a1b2c3d4e5f6">
-  <button onclick="genererMac()">⚙️ Générer</button>
   <button onclick="coller('macInput')">📥 Coller</button>
   <button onclick="formatMac()">📋 Formater</button>
   <button onclick="copier('macOutput')">📤 Copier</button>
@@ -125,21 +123,7 @@
   <input type="text" id="resultAtt" readonly>
 </div>
 
-
-
-
 <div id="client" class="tab">
-  <style>
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
-    .form-field {
-      display: flex;
-      flex-direction: column;
-    }
-  </style>
   <div class="form-grid">
     <div class="form-field">
       <label>MAC Modem Neuf :</label>
@@ -147,21 +131,18 @@
       <button onclick="coller('macNeuf')">📥 Coller</button>
       <button onclick="copier('macNeuf')">📤 Copier</button>
     </div>
-
     <div class="form-field">
       <label>MAC Modem Ancien :</label>
       <input type="text" id="macAncien">
       <button onclick="coller('macAncien')">📥 Coller</button>
       <button onclick="copier('macAncien')">📤 Copier</button>
     </div>
-
     <div class="form-field">
       <label>SN Box Neuve :</label>
       <input type="text" id="snBoxNeuve">
       <button onclick="coller('snBoxNeuve')">📥 Coller</button>
       <button onclick="copier('snBoxNeuve')">📤 Copier</button>
     </div>
-
     <div class="form-field">
       <label>SN Box Ancienne :</label>
       <input type="text" id="snBoxAncienne">
@@ -171,13 +152,10 @@
   </div>
 </div>
 
-
 <div id="raccourcis" class="tab">
   <div class="links">
     <a href="http://192.168.0.1" target="_blank">Portail Modem</a>
-    
     <a href="https://www.speedtest.net" target="_blank">Speedtest</a>
-    
     <a href="https://voo.be" target="_blank">VOO</a>
     <a href="https://orange.be" target="_blank">Orange</a>
     <a href="https://chat.openai.com" target="_blank">CheatGPT</a>
@@ -187,7 +165,7 @@
 <footer>Outil complet – Kervin Harte</footer>
 
 <script>
-  function openTab(id) {
+  function openTab(id, event) {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.tablink').forEach(b => b.classList.remove('active'));
     document.getElementById(id).classList.add('active');
@@ -210,6 +188,11 @@
     document.getElementById(id).value = '';
   }
 
+  function effacerMac() {
+    document.getElementById("macInput").value = '';
+    document.getElementById("macOutput").value = '';
+  }
+
   function formatMac() {
     let mac = document.getElementById("macInput").value.replace(/[^a-fA-F0-9]/g, '').toUpperCase();
     if(mac.length === 12) {
@@ -220,21 +203,6 @@
     }
   }
 
-  function genererMac() {
-    let hex = "0123456789ABCDEF";
-    let mac = "";
-    for (let i = 0; i < 12; i++) {
-      mac += hex[Math.floor(Math.random() * 16)];
-    }
-    document.getElementById("macInput").value = mac;
-    formatMac();
-  }
-
-  function effacerMac() {
-    document.getElementById("macInput").value = '';
-    document.getElementById("macOutput").value = '';
-  }
-
   function calculerAttenuation() {
     const freq = parseFloat(document.getElementById("freq").value);
     const rg6 = parseFloat(document.getElementById("rg6").value);
@@ -242,12 +210,10 @@
     const prise = parseFloat(document.getElementById("prise").value);
     const base = parseFloat(document.getElementById("signalBase").value);
     const type = document.getElementById("type").value;
-
     if (isNaN(freq) || isNaN(rg6) || isNaN(rg11) || isNaN(prise) || isNaN(base)) {
       alert("Merci de remplir tous les champs.");
       return;
     }
-
     const attRG6 = (freq * 0.0035) * rg6;
     const attRG11 = (freq * 0.0018) * rg11;
     const totalAtt = attRG6 + attRG11 + prise;
